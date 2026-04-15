@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Your Ticket</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.success-icon {
+    font-size: 3em;
+    color: #4caf50;
+    margin-bottom: 10px;
+    animation: checkmark 1s ease-in-out;
+}
+
+@keyframes checkmark {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    50% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.ticket {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    color: #333;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 450px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 3px solid #ffd700;
+    position: relative;
+    overflow: hidden;
+    animation: ticketSlideIn 1.2s ease-out;
+}
+
+@keyframes ticketSlideIn {
+    from { opacity: 0; transform: translateY(50px) rotateX(10deg); }
+    to { opacity: 1; transform: translateY(0) rotateX(0); }
+}
+
+.ticket h3 {
+    margin: 0 0 20px 0;
+    font-size: 1.5em;
+    color: #ff6b35;
+}
+
+.ticket-row {
+    margin: 12px 0;
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 6px;
+    border-left: 4px solid #ffd700;
+}
+
+.ticket-row strong {
+    color: #333;
+    display: block;
+    font-size: 0.9em;
+    color: #999;
+}
+
+.ticket-row span {
+    display: block;
+    font-size: 1.1em;
+    color: #333;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+.buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+button {
+    padding: 12px 30px;
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+}
+
+.home-btn {
+    background: linear-gradient(45deg, #ff9800, #ffb74d);
+    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+}
+
+.home-btn:hover {
+    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
+}
+</style>
+</head>
+
+<body>
+
+<div class="success-icon">✅</div>
+<h2>Booking Confirmed! 🎉</h2>
+
+<div class="ticket" id="ticket">
+    <h3>Your Ticket</h3>
+</div>
+
+<div class="buttons">
+    <button onclick="downloadPDF()">📄 Download PDF</button>
+    <button class="home-btn" onclick="goHome()">🏠 Go Home</button>
+</div>
+
+<script>
+const match = localStorage.getItem("match");
+const matchDate = localStorage.getItem("matchDate") || "";
+const stadium = localStorage.getItem("stadium") || "";
+const seats = JSON.parse(localStorage.getItem("seats") || "[]");
+const paymentMethod = localStorage.getItem("paymentMethod") || "Not specified";
+const totalPrice = localStorage.getItem("totalPrice") || "0";
+
+const ticketDiv = document.getElementById("ticket");
+
+// Build ticket content
+let ticketHTML = `<h3>${match}</h3>`;
+ticketHTML += `<div class="ticket-row"><strong>Match Date</strong><span>${matchDate}</span></div>`;
+ticketHTML += `<div class="ticket-row"><strong>Stadium</strong><span>${stadium}</span></div>`;
+ticketHTML += `<div class="ticket-row"><strong>Seats</strong><span>${seats.join(", ")}</span></div>`;
+ticketHTML += `<div class="ticket-row"><strong>Payment Method</strong><span>${paymentMethod}</span></div>`;
+ticketHTML += `<div class="ticket-row"><strong>Total Amount</strong><span style="color: #4caf50;">₹${totalPrice}</span></div>`;
+
+ticketDiv.innerHTML = ticketHTML;
+
+function downloadPDF() {
+    window.print();
+}
+
+function goHome() {
+    localStorage.removeItem("match");
+    localStorage.removeItem("matchDate");
+    localStorage.removeItem("stadium");
+    localStorage.removeItem("seats");
+    localStorage.removeItem("paymentMethod");
+    localStorage.removeItem("totalPrice");
+    localStorage.removeItem("bookingSaved");
+    localStorage.removeItem("bookingId");
+    window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Payment Method</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white;
+    text-align: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.booking-summary {
+    background: rgba(29, 41, 59, 0.8);
+    border: 2px solid #ffd700;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.booking-summary h3 {
+    color: #ffd700;
+    text-align: center;
+    margin-top: 0;
+}
+
+.booking-summary p {
+    margin: 8px 0;
+    font-size: 1em;
+}
+
+.payment-options {
+    display: grid;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-option:hover {
+    border-color: #4CAF50;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.payment-option.selected {
+    border-color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.payment-option input[type="radio"] {
+    margin-right: 15px;
+    transform: scale(1.2);
+}
+
+.payment-icon {
+    font-size: 24px;
+    margin-right: 15px;
+    width: 30px;
+    text-align: center;
+}
+
+.payment-details {
+    flex: 1;
+    text-align: left;
+}
+
+.payment-details h4 {
+    margin: 0 0 5px 0;
+    color: white;
+}
+
+.payment-details p {
+    margin: 0;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+button {
+    padding: 12px 30px;
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.back-btn {
+    background: linear-gradient(45deg, #ff9800, #ffb74d);
+    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+}
+
+.back-btn:hover {
+    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <h2>💳 Select Payment Method</h2>
+
+    <div class="booking-summary" id="bookingSummary">
+        <h3>Booking Summary</h3>
+    </div>
+
+    <div class="payment-options">
+        <div class="payment-option" onclick="selectPaymentOption('card')">
+            <input type="radio" name="payment" value="card" id="card">
+            <span class="payment-icon">💳</span>
+            <div class="payment-details">
+                <h4>Credit/Debit Card</h4>
+                <p>Visa, Mastercard, RuPay</p>
+            </div>
+        </div>
+
+        <div class="payment-option" onclick="selectPaymentOption('upi')">
+            <input type="radio" name="payment" value="upi" id="upi">
+            <span class="payment-icon">📱</span>
+            <div class="payment-details">
+                <h4>UPI</h4>
+                <p>Google Pay, PhonePe, Paytm</p>
+            </div>
+        </div>
+
+        <div class="payment-option" onclick="selectPaymentOption('netbanking')">
+            <input type="radio" name="payment" value="netbanking" id="netbanking">
+            <span class="payment-icon">🏦</span>
+            <div class="payment-details">
+                <h4>Net Banking</h4>
+                <p>All major banks supported</p>
+            </div>
+        </div>
+
+        <div class="payment-option" onclick="selectPaymentOption('wallet')">
+            <input type="radio" name="payment" value="wallet" id="wallet">
+            <span class="payment-icon">👛</span>
+            <div class="payment-details">
+                <h4>Digital Wallet</h4>
+                <p>Paytm, Mobikwik, Ola Money</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button class="back-btn" onclick="goBack()">← Back to Seats</button>
+        <button id="payButton" onclick="processPayment()" disabled>Pay Now →</button>
+    </div>
+</div>
+
+<script>
+const match = localStorage.getItem("match");
+const matchDate = localStorage.getItem("matchDate") || "";
+const stadium = localStorage.getItem("stadium") || "";
+const seats = JSON.parse(localStorage.getItem("seats") || "[]");
+const email = localStorage.getItem("user") || "";
+
+if (!email) {
+    alert("Please log in before completing the payment.");
+    window.location.href = "index.html";
+}
+
+// Calculate total price
+function calculateTotalPrice() {
+    let total = 0;
+    seats.forEach(() => {
+        total += 2000; // VIP price
+    });
+    return total;
+}
+
+// Display booking summary
+function displayBookingSummary() {
+    const summary = document.getElementById("bookingSummary");
+    const totalPrice = calculateTotalPrice();
+
+    const summary_html = `
+        <h3>Booking Summary</h3>
+        <p><strong>Match:</strong> ${match}</p>
+        <p><strong>Date:</strong> ${matchDate}</p>
+        <p><strong>Stadium:</strong> ${stadium}</p>
+        <p><strong>Seats:</strong> ${seats.join(", ")}</p>
+        <p><strong>Total Amount:</strong> ₹${totalPrice}</p>
+    `;
+
+    summary.innerHTML = summary_html;
+}
+
+function selectPaymentOption(option) {
+    const radio = document.getElementById(option);
+    radio.checked = true;
+
+    document.querySelectorAll('.payment-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    radio.closest('.payment-option').classList.add('selected');
+
+    document.getElementById("payButton").disabled = false;
+}
+
+async function processPayment() {
+    const selectedPayment = document.querySelector('input[name="payment"]:checked');
+    if (!selectedPayment) {
+        alert("Please select a payment method!");
+        return;
+    }
+
+    const totalPrice = calculateTotalPrice();
+    const bookingPayload = {
+        email,
+        match,
+        matchDate,
+        stadium,
+        seats,
+        category: "VIP",
+        paymentMethod: selectedPayment.value
+    };
+
+    localStorage.setItem("paymentMethod", selectedPayment.value);
+    localStorage.setItem("totalPrice", totalPrice);
+
+    try {
+        console.log("Processing payment:", bookingPayload);
+        const response = await fetch("http://localhost:5000/api/bookings", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(bookingPayload)
+        });
+
+        if (response.ok) {
+            const savedBooking = await response.json();
+            console.log("Booking saved:", savedBooking);
+            localStorage.setItem("bookingSaved", "true");
+            localStorage.setItem("bookingId", savedBooking._id || "");
+        } else {
+            console.error("Backend responded with:", response.status);
+        }
+    } catch (err) {
+        console.error("Payment processing error:", err);
+    }
+
+    window.location.href = "ticket.html";
+}
+
+function goBack() {
+    window.location.href = "seats.html";
+}
+
+// Initialize
+displayBookingSummary();
+</script>
+
+</body>
+</html>

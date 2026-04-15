@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Register</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url("https://images.unsplash.com/photo-1593341646782-e0b495cff86d") no-repeat center/cover;
+    color: white;
+}
+
+/* Overlay */
+.overlay {
+    background: rgba(0,0,0,0.8);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Card */
+.card {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+/* Inputs */
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(45deg, orange, darkorange);
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* Error */
+.error-box {
+    color: red;
+    margin-top: 10px;
+}
+
+/* Success Popup */
+.success-box {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.success-card {
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    animation: pop 0.5s ease;
+}
+
+.tick {
+    font-size: 50px;
+    color: green;
+}
+
+/* Animation */
+@keyframes pop {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+<div class="card">
+    <h2>Register 🏏</h2>
+
+    <input id="name" placeholder="Name">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="register()">Register</button>
+
+    <div id="errorBox" class="error-box"></div>
+</div>
+
+</div>
+
+<!-- Success Popup -->
+<div id="successBox" class="success-box">
+    <div class="success-card">
+        <h2>🎉 Registered Successfully</h2>
+        <p>Welcome to IPL Booking 🏏</p>
+        <div class="tick">✔</div>
+    </div>
+</div>
+
+<script>
+async function register() {
+
+    const nameValue = document.getElementById("name").value.trim();
+    const emailValue = document.getElementById("email").value.trim();
+    const passwordValue = document.getElementById("password").value.trim();
+
+    // Validation
+    if (!nameValue || !emailValue || !passwordValue) {
+        showError("⚠ Please fill all fields");
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:5000/api/users/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: nameValue,
+                email: emailValue,
+                password: passwordValue
+            })
+        });
+
+        const msg = await res.text();
+
+        if (msg === "Registered Successfully") {
+            showSuccess();
+        } else {
+            showError(msg);
+        }
+
+    } catch (err) {
+        showError("Server error");
+    }
+}
+
+// Show success popup
+function showSuccess() {
+    document.getElementById("successBox").style.display = "flex";
+
+    setTimeout(() => {
+        window.location.href = "index.html"; // redirect
+    }, 2000);
+}
+
+// Show error
+function showError(msg) {
+    document.getElementById("errorBox").innerText = msg;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IPL Ticket Booking</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: url("https://images.openai.com/static-rsc-4/OkLYX5MhABPoONdBqeypu7qnyWEmG-taystWFXnRwDWuL6CZ627j_kU9KJY2xvbSw9fgC8v3l4jPhEz2ozrQM-w6wi0qXa_CBqrkliinDfWodV56ibUECXhZh1BVNXVJwRrn8fylQnWzrPepxb2cp6r6JIaHArUcjFJ4ZpdQI71KpztISGFu1VSeEWpsXqsV?purpose=fullsize") no-repeat center/cover;
+            color: white;
+        }
+
+        /* Overlay */
+        .overlay {
+            background: rgba(0,0,0,0.75);
+            min-height: 100vh;
+        }
+
+        /* Navbar (ONLY TITLE NOW) */
+        .navbar {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.6);
+        }
+
+        .navbar h2 {
+            color: orange;
+            margin: 0;
+            font-size: 28px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-top: 150px;
+        }
+
+        .hero h1 {
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #ddd;
+            margin-bottom: 30px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            margin: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .login {
+            background: orange;
+            color: white;
+        }
+
+        .register {
+            background: #1e293b;
+            color: white;
+            border: 1px solid orange;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+<!-- Navbar (Only Title) -->
+<div class="navbar">
+    <h2>IPL Booking</h2>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+    <h1>Start Booking</h1>
+    <p>Book Ticket for your favourite match and enjoy live cricket in the stadium</p>
+
+    <a href="login.html">
+        <button class="btn login">Login</button>
+    </a>
+
+    <a href="register.html">
+        <button class="btn register">Register</button>
+    </a>
+</div>
+
+</div>
+
+</body>
+</html>

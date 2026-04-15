@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Seat Selection</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url("https://parametric-architecture.com/wp-content/uploads/2025/06/Narendra_Modi_Stadium-scaled.webp") no-repeat center/cover;
+    color: #ffffff;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+h1 {
+    margin-top: 20px;
+    color: #d936ff;
+    text-shadow: 0 0 18px rgba(110, 0, 120, 0.85);
+}
+
+.screen {
+    background: gray;
+    padding: 10px;
+    margin: 20px auto;
+    width: 300px;
+}
+
+.stadium {
+    color: #ff99ff;
+    margin-bottom: 10px;
+    text-shadow: 0 0 12px rgba(112, 0, 112, 0.7);
+}
+
+h1, .stadium, .legend span, .selected-info, .payment-summary, .payment-details h4, .payment-details p {
+    color: #ffffff;
+}
+
+.legend span {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+.selected-info,
+.payment-summary {
+    color: #ffffff;
+}
+
+.payment-details h4,
+.payment-details p {
+    color: #f5f5f5;
+}
+
+.category-filter {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.category-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.category-btn.normal {
+    background: green;
+    color: white;
+}
+
+.category-btn.premium {
+    background: orange;
+    color: white;
+}
+
+.category-btn.vip {
+    background: rgb(6, 186, 171);
+    color: black;
+}
+
+.category-btn.active.normal {
+    animation: normalGlow 0.6s infinite alternate;
+}
+
+.category-btn.active.premium {
+    animation: premiumGlow 0.6s infinite alternate;
+}
+
+.category-btn.active.vip {
+    animation: vipGlow 0.6s infinite alternate;
+}
+
+.category-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Seat grid */
+.container {
+    display: grid;
+    grid-template-columns: repeat(15, 45px);
+    gap: 10px;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+/* Seats */
+.seat {
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: 0.3s;
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+}
+
+/* Types */
+.seat.normal { background: green; }
+.seat.premium { background: orange; }
+.seat.vip { background: rgb(14, 198, 198); color: black; }
+
+.seat.normal.active {
+    animation: normalGlow 0.6s infinite alternate;
+}
+
+.seat.premium.active {
+    animation: premiumGlow 0.6s infinite alternate;
+}
+
+.seat.vip.active {
+    animation: vipGlow 0.6s infinite alternate;
+}
+
+.booked { background: red; cursor: not-allowed; }
+
+/* Glow Animations */
+@keyframes normalGlow {
+    from { box-shadow: 0 0 8px green, 0 0 15px lime; }
+    to { box-shadow: 0 0 20px lime, 0 0 30px green; }
+}
+
+@keyframes premiumGlow {
+    from { box-shadow: 0 0 8px orange, 0 0 15px yellow; }
+    to { box-shadow: 0 0 20px yellow, 0 0 30px orange; }
+}
+
+@keyframes vipGlow {
+    from { box-shadow: 0 0 8px rgb(3, 192, 179), 0 0 15px rgb(9, 198, 208); }
+    to { box-shadow: 0 0 20px rgb(7, 178, 155), 0 0 30px rgb(0, 255, 229); }
+}
+
+.selected {
+    background: blue !important;
+    box-shadow: 0 0 10px rgb(69, 3, 86);
+}
+
+/* Legend */
+.legend {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 14px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-box {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+}
+
+/* Buttons */
+.button-group {
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+.selected-info {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 6px;
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+}
+
+/* Payment Modal */
+.payment-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.payment-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1e293b;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.payment-content h2 {
+    color: #ffd700;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.payment-summary {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.payment-options {
+    display: grid;
+    gap: 15px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-option:hover {
+    border-color: #4CAF50;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.payment-option.selected {
+    border-color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.payment-option input[type="radio"] {
+    margin-right: 15px;
+    transform: scale(1.2);
+}
+
+.payment-icon {
+    font-size: 24px;
+    margin-right: 15px;
+    width: 30px;
+    text-align: center;
+}
+
+.payment-details {
+    flex: 1;
+}
+
+.payment-details h4 {
+    margin: 0 0 5px 0;
+    color: white;
+}
+
+.payment-details p {
+    margin: 0;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.pay-button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(45deg, #4CAF50, #66bb6a);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.pay-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Select Your Seats</h1>
+<div class="stadium" id="stadium"></div>
+<div class="name" id="name"></div>Cricket Stadium</div>
+
+<!-- Category Filters -->
+<div class="category-filter">
+    <button class="category-btn normal" onclick="filterCategory('normal')">Normal Seats</button>
+    <button class="category-btn premium" onclick="filterCategory('premium')">Premium Seats</button>
+    <button class="category-btn vip active" onclick="filterCategory('vip')">VIP Seats</button>
+</div>
+
+<!-- Seat Grid -->
+<div class="container" id="seats"></div>
+
+<!-- Legend -->
+<div class="legend">
+    <div class="legend-item">
+        <div class="legend-box" style="background: green;"></div>
+        <span>Normal (₹500)</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-box" style="background: orange;"></div>
+        <span>Premium (₹1000)</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-box" style="background: rgb(0, 255, 242);"></div>
+        <span>VIP (₹2000)</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-box" style="background: red;"></div>
+        <span>Booked</span>
+    </div>
+</div>
+
+<!-- Selected Info -->
+<div class="selected-info" id="selectedInfo">No seats selected</div>
+
+<!-- Buttons -->
+<div class="button-group">
+    <button onclick="clearSelection()">Clear Selection</button>
+    <button onclick="goPayment()">Proceed to Payment</button>
+</div>
+
+<script>
+const match = localStorage.getItem("match");
+const matchDate = localStorage.getItem("matchDate") || "";
+const selectedStadium = localStorage.getItem("stadium") || "";
+
+// Stadium mapping with seat capacity
+const stadiumMap = {
+    "CSK vs MI": { name: "Chepauk Stadium", seats: 80 },
+    "RCB vs KKR": { name: "Chinnaswamy Stadium", seats: 100 },
+    "SRH vs DC": { name: "Hyderabad Stadium", seats: 90 },
+    "RR vs PBKS": { name: "Jaipur Stadium", seats: 85 }
+};
+
+const stadium = stadiumMap[match] || { name: "IPL Stadium", seats: 80 };
+document.getElementById("stadium").innerText = "📍 " + stadium.name;
+
+let selectedSeats = [];
+let activeCategory = 'vip';
+
+// Generate seats based on stadium capacity
+function generateSeats() {
+    const container = document.getElementById("seats");
+    container.innerHTML = "";
+    
+    for (let i = 1; i <= stadium.seats; i++) {
+        const seat = document.createElement("div");
+        
+        // Distribute seats: 40% normal, 35% premium, 25% vip
+        let category;
+        if (i <= Math.floor(stadium.seats * 0.4)) {
+            category = "normal";
+        } else if (i <= Math.floor(stadium.seats * 0.75)) {
+            category = "premium";
+        } else {
+            category = "vip";
+        }
+        
+        seat.className = "seat " + category;
+        seat.innerText = i;
+
+        // Random booked seats (10%)
+        if (Math.random() < 0.1) {
+            seat.classList.add("booked");
+        }
+
+        seat.onclick = () => {
+            if (seat.classList.contains("booked")) return;
+
+            seat.classList.toggle("selected");
+
+            if (selectedSeats.includes(i)) {
+                selectedSeats = selectedSeats.filter(s => s !== i);
+            } else {
+                selectedSeats.push(i);
+            }
+            
+            updateSelectedInfo();
+        };
+
+        container.appendChild(seat);
+    }
+}
+
+// Filter seats by category
+function filterCategory(category) {
+    activeCategory = category;
+    
+    // Update button styles
+    document.querySelectorAll(".category-btn").forEach(btn => {
+        btn.classList.remove("active");
+    });
+    event.target.classList.add("active");
+    
+    // Highlight selected category seats with glow
+    document.querySelectorAll(".seat").forEach(seat => {
+        if (seat.classList.contains(category) && !seat.classList.contains("booked")) {
+            seat.classList.add("active");
+        } else {
+            seat.classList.remove("active");
+        }
+    });
+}
+
+// Update selected info
+function updateSelectedInfo() {
+    const info = document.getElementById("selectedInfo");
+    if (selectedSeats.length === 0) {
+        info.innerText = "No seats selected";
+    } else {
+        const categories = {};
+        selectedSeats.forEach(seatNum => {
+            const seatEl = document.querySelector(`.seat:nth-child(${seatNum})`);
+            const cat = seatEl.classList[1];
+            categories[cat] = (categories[cat] || 0) + 1;
+        });
+        
+        let text = `Selected: ${selectedSeats.sort((a,b) => a-b).join(", ")} | `;
+        text += Object.entries(categories).map(([cat, count]) => {
+            const prices = { normal: 500, premium: 1000, vip: 2000 };
+            return `${cat.charAt(0).toUpperCase() + cat.slice(1)}: ${count} (₹${prices[cat] * count})`;
+        }).join(" | ");
+        
+        info.innerText = text;
+    }
+}
+
+// Clear selection
+function clearSelection() {
+    selectedSeats = [];
+    document.querySelectorAll(".seat.selected").forEach(seat => {
+        seat.classList.remove("selected");
+    });
+    updateSelectedInfo();
+}
+
+// Go payment - redirect to payment.html
+function goPayment() {
+    if (selectedSeats.length === 0) {
+        alert("Please select at least one seat!");
+        return;
+    }
+    
+    // Store seat data in localStorage
+    localStorage.setItem("seats", JSON.stringify(selectedSeats));
+    
+    // Redirect to payment.html
+    window.location.href = "payment.html";
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById("paymentModal");
+    if (modal && event.target === modal) {
+        closePaymentModal();
+    }
+}
+
+function closePaymentModal() {
+    // Modal removed - redirecting to payment.html instead
+}
+
+// Initialize
+generateSeats();
+filterCategory('vip');
+
+</script>
+
+</body>
+</html>
