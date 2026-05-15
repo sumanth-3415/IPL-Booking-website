@@ -24,7 +24,7 @@ mongoose
     // Start server AFTER MongoDB connects
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
-      console.log("Server running on https://your-render-url.onrender.com");
+      console.log("Server running on https://ipl-booking-website.onrender.com/");
     });
   })
   .catch((err) => {
