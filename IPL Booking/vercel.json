@@ -1,9 +1,7 @@
 {
-  "buildCommand": "echo 'Frontend static build'",
-  "outputDirectory": ".",
   "rewrites": [
     {
-      "source": "/(?!.*\\..*$)",
+      "source": "/:path*",
       "destination": "/index.html"
     }
   ]
