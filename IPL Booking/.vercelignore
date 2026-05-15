@@ -1,0 +1,7 @@
+Backend/
+.git
+node_modules
+.env
+.DS_Store
+*.md
+playground-*.mongodb.js
