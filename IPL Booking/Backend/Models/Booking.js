@@ -4,11 +4,13 @@ const bookingSchema = new mongoose.Schema({
     email: String,
     match: String,
     stadium: String,
-    matchDate: String,
-    seats: [Number],
+    seats: Array,
     category: String,
     paymentMethod: String,
-    createdAt: { type: Date, default: Date.now }
+    date: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 module.exports = mongoose.model("Booking", bookingSchema);

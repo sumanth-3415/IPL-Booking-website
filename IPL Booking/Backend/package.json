@@ -7,6 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
+
+  "scripts": {
+  "start": "node server.js"
+},
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/sumanth-3415/https://github.com/sumanth-3415/IPL-Booking-website"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
